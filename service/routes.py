@@ -61,7 +61,23 @@ def create_accounts():
 # LIST ALL ACCOUNTS
 ######################################################################
 
-# ... place you code here to LIST accounts ...
+@app.route("/accounts", methods=["GET"])
+def list_accounts():
+    """
+    List All Accounts
+
+    This endpoint retrieves all accounts using the Account.all() method,
+    returns them as a list of dictionaries, and always sends back
+    status HTTP_200_OK. If no accounts are found, it returns an empty list.
+    """
+    # Use the Account.all() method to get all account records
+    accounts = Account.all()
+
+    # Convert the list of Account objects into a list of dictionaries
+    # If accounts is None or empty, result will be an empty list
+    account_list = [account.serialize() for account in accounts] if accounts else []
+
+    return jsonify(account_list), status.HTTP_200_OK
 
 
 ######################################################################

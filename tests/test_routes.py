@@ -124,3 +124,27 @@ class TestAccountService(TestCase):
         self.assertEqual(response.status_code, status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
 
     # ADD YOUR TEST CASES HERE ...
+    def test_list_accounts_empty(self):
+        """It should return an empty list and 200_OK when no accounts exist"""
+        response = self.client.get(BASE_URL)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        data = response.get_json()
+        # Expect an empty list if no accounts exist
+        self.assertEqual(data, [])
+
+    def test_list_accounts_with_data(self):
+        """It should return all accounts as a list of dicts and 200_OK when accounts exist"""
+        # Create some accounts
+        count = 3
+        self._create_accounts(count)
+        response = self.client.get(BASE_URL)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        data = response.get_json()
+        # Check that the number of accounts returned is the same as were created
+        self.assertEqual(len(data), count)
+        # Optionally, validate that each item in the list is a dictionary with expected keys
+        for account in data:
+            self.assertIsInstance(account, dict)
+            self.assertIn("id", account)
+            self.assertIn("name", account)
+            self.assertIn("email", account)
